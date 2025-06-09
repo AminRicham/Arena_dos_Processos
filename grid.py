@@ -1,48 +1,32 @@
-import random
-from robots import Robot
+import shared_struct as ss
+from random import randint
+from multiprocessing import Array
 
-class Grid:
-    def __init__(self, x: int,y: int,): #robos: Robot
-        self.x = x
-        self.y = y
-        self.qtd_itemEnergia = random.randint(3, 10)
-        self.qtd_itemBarreira = random.randint(3, 10)
-        self.posicoesTomadas = []
-        self.grid = self.createGridBase()
-        self.adicionaElementos()
+def iniciaGrid(grid):
+    for i in range(len(grid)):
+        grid[i] = "-"
 
-    def createGridBase(self):
-        grid = []
-        for _ in range(self.x):
-            row = []
-            for _ in range(self.y):
-                row.append('-')
-            grid.append(row)
-        return grid
+def printGrid(grid):
+    for i in range (len(grid)):
+        print(grid[i], end = " ")
+        if ((i+1) % 40) == 0:
+            print()
 
-    def adicionaElementos(self):
-        self.adicionaBarreiras()
-        self.adicionaBaterias()
+def adicionaBaterias(grid):
+    qtdBaterias = randint(10,30)
+#    print(qtdBaterias)
+    for _ in range (qtdBaterias):
+        posicao = randint(0, 799)
+        grid[posicao] = "\U000026A1"
 
-    def adicionaBaterias(self):
-        for _ in range (self.qtd_itemEnergia - 1):
-            posicaoX = random.randint(0, self.x - 1)
-            posicaoY = random.randint(0, self.y - 1)
-            if (posicaoX, posicaoY) not in self.posicoesTomadas:
-                self.grid[posicaoX][posicaoY] = "\U000026A1"
-                self.posicoesTomadas.append((posicaoX, posicaoY))
 
-    def adicionaBarreiras(self):
-        try:
-            for _ in range (self.qtd_itemBarreira - 1):
-                posicaoX = random.randint(0, self.x - 1)
-                posicaoY = random.randint(0, self.y - 1)
-                if  (posicaoX, posicaoY) not in self.posicoesTomadas:
-                    self.grid[posicaoX][posicaoY] = "#"
-                    self.posicoesTomadas.append((posicaoX, posicaoY))
-        except Exception as e:
-            print(e)
+def adicionaBarreiras(grid):
+    qtdBarreiras = randint(0,15)
+#    print(qtdBarreiras)
+    for _ in range (qtdBarreiras):
+        posicao = randint(0, 799)
+        grid[posicao] = "#"
 
-    def printGrid(self):
-        for row in self.grid:
-            print(" ".join(row))
+def adicionaElementos(grid):
+    adicionaBarreiras(grid)
+    adicionaBaterias(grid)

@@ -13,12 +13,9 @@ def printGrid(grid):
             print()
 
 def adicionaBaterias(grid):
-    qtdBaterias = randint(10,30)
-#    print(qtdBaterias)
-    for _ in range (qtdBaterias):
+    for _ in range (ss.QTD_BATERIAS):
         posicao = randint(0, 799)
         grid[posicao] = "\U000026A1"
-
 
 def adicionaBarreiras(grid):
     qtdBarreiras = randint(0,15)
@@ -30,3 +27,7 @@ def adicionaBarreiras(grid):
 def adicionaElementos(grid):
     adicionaBarreiras(grid)
     adicionaBaterias(grid)
+
+def escreveNoArq(arq, qtdBaterias):
+    with open(arq, "a") as arquivo:
+        arquivo.write(f"QTD_BATERIAS = {qtdBaterias}")

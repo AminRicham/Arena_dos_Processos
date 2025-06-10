@@ -1,7 +1,10 @@
 import random
 import multiprocessing as mp
+import threading
 import shared_struct as ss
 from shared_struct import RoboShared
+from flagsFunctions import setFlagGameOver, getFlagGameOver
+import time
 
 
 # Criação dos locks mutex
@@ -114,11 +117,36 @@ class Robot:
                 self.set_grid(self.posicao_x, self.posicao_y, "-")
                 self.set_grid(outro_robo.posicao_x, outro_robo.posicao_y, "-")
             
+    def sense_act(self):
+        """Método para o robô sentir o ambiente e agir."""
+        while self.status == b"V" and getFlagGameOver(self.flags) == 0:
+            self.mover()
+            tempo_espera = self.velocidade * 0.2
+            time.sleep(tempo_espera)  # Simula o tempo de espera baseado na velocidade do robô
     
-    def mostrar_log(self):
-        print(f"Log do Robô {self.ID}:")
-        for acao in self.log:
-            print(acao)
+    def housekeeping(self):
+        """Método para o robô realizar tarefas de manutenção."""
+        while self.status == b"V" and getFlagGameOver(self.flags) == 0:
+            self.energia -= 1
+            if self.energia <= 0:
+                self.status = b"M"
+                with grid_mutex:
+                    self.set_grid(self.posicao_x, self.posicao_y, "-")
+                self.log.append(f"Robo {self.ID} ficou sem energia e foi desligado.")
+            time.sleep(1)
+            
+    def iniciar(self):
+        t1 = threading.Thread(target=self.sense_act)
+        t2 = threading.Thread(target=self.housekeeping)
+        t1.start()
+        t2.start()
+        t1.join()
+        t2.join()
+        
+        self.log.append(f"Robo {self.ID} finalizou suas atividades.")
+        for linha in self.log:
+            print(linha)
+
 
 # testar a classe Robot
 robo1 = Robot(ID=1, F=10, E=100, V=5, posicao_x=random.randint(0, 19), posicao_y=random.randint(0, 19), status="V")

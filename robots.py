@@ -1,6 +1,8 @@
 import random
 import multiprocessing as mp
 import shared_struct as ss
+from shared_struct import RoboShared
+
 
 # Criação dos locks mutex
 grid_mutex = mp.Lock()
@@ -14,7 +16,7 @@ ALTURA_GRID = 20
 GRID = [["-" for _ in range(LARGURA_GRID)] for _ in range(ALTURA_GRID)]
 
 class Robot:
-    def __init__(self, ID, F, E, V, posicao_x, posicao_y, status, grid, flags):
+    def __init__(self, ID, F, E, V, posicao_x, posicao_y, status, grid, flags, robots_shared):
         self.ID = ID
         self.forca = F
         self.energia = E
@@ -25,6 +27,7 @@ class Robot:
         self.log = [] # Log de ações do robô
         self.grid = grid
         self.flags = flags
+        self.robots = robots_shared  # Lista de robôs compartilhada
         
         # Adiciona o robô na grid se a posição estiver vazia
         with grid_mutex: # Protegendo o grid
@@ -44,7 +47,7 @@ class Robot:
         self.grid[index] = value.encode()
         
     def mover(self):
-        if self.energia <= 0 or self.status != "Vivo":
+        if self.energia <= 0 or self.status != b"V":
             print(f"Robô {self.ID} sem energia ou morto.")
             return
         
@@ -81,7 +84,36 @@ class Robot:
             elif destino.isdigit() and destino != str(self.ID): # Se a posição já estiver ocupada por outro robô
                 self.duelar(int(destino))
     
-    
+    def duelar(self, outro_robo_id):
+        outro_robo = self.robots[outro_robo_id]
+        
+        # Confirmar que ainda estão vivos
+        if self.status != b"V" or outro_robo.status != b"V":
+            return
+        
+        # Lógica de duelo
+        if self.forca > outro_robo.forca:
+            self.log.append(f"Robo {self.ID} venceu o duelo contra Robo {outro_robo_id}.")
+            outro_robo.status = b"M"
+            with grid_mutex:
+                self.set_grid(outro_robo.posicao_x, outro_robo.posicao_y, "-")
+        
+        elif self.forca < outro_robo.forca:
+            self.log.append(f"Robo {self.ID} perdeu o duelo contra Robo {outro_robo_id}.")
+            self.status = b"M"
+            self.robots[self.ID] = 0 # Marca o robô atual como morto
+            with grid_mutex:
+                self.set_grid(self.posicao_x, self.posicao_y, "-")
+        
+        else: 
+            self.log.append(f"Robo {self.ID} e Robo {outro_robo_id} empataram no duelo.")
+            self.status = b"M"
+            outro_robo.status = b"M"
+            self.robots[self.ID] = 0
+            with grid_mutex:
+                self.set_grid(self.posicao_x, self.posicao_y, "-")
+                self.set_grid(outro_robo.posicao_x, outro_robo.posicao_y, "-")
+            
     
     def mostrar_log(self):
         print(f"Log do Robô {self.ID}:")
@@ -89,7 +121,7 @@ class Robot:
             print(acao)
 
 # testar a classe Robot
-robo1 = Robot(ID=1, F=10, E=100, V=5, posicao_x=random.randint(0, 19), posicao_y=random.randint(0, 19), status="Vivo")
+robo1 = Robot(ID=1, F=10, E=100, V=5, posicao_x=random.randint(0, 19), posicao_y=random.randint(0, 19), status="V")
 robo1.mover()
 robo1.mostrar_log()
 #print(vars(robo1))

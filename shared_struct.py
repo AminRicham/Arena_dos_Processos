@@ -16,6 +16,6 @@ class RoboShared(ctypes.Structure):
         ("velocidade", ctypes.c_int),
         ("posicao_x", ctypes.c_int),
         ("posicao_y", ctypes.c_int),
-        ("status", ctypes.c_char),  # 'Vivo', 'Morto'
+        ("status", ctypes.c_char),  # 'V', 'M'
         ("log", ctypes.c_char * 100),  # Log de ações do robô
     ]

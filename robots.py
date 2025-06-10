@@ -1,5 +1,6 @@
 import random
 import multiprocessing as mp
+import shared_struct as ss
 
 # Criação dos locks mutex
 grid_mutex = mp.Lock()
@@ -43,8 +44,8 @@ class Robot:
         self.grid[index] = value.encode()
         
     def mover(self):
-        if self.energia <= 0:
-            print(f"Robô {self.ID} sem energia para se mover.")
+        if self.energia <= 0 or self.status != "Vivo":
+            print(f"Robô {self.ID} sem energia ou morto.")
             return
         
         # Movimento aleatório do robo
@@ -52,20 +53,22 @@ class Robot:
         dx *= self.velocidade
         dy *= self.velocidade
         # Definindo nova posição
-        nova_posicao_x = max(0, min(LARGURA_GRID - 1, self.posicao_x + dx)) # Verificação para não sair do grid e chegar no ultimo bloco
-        nova_posicao_y = max(0, min(ALTURA_GRID - 1, self.posicao_y + dy))
+        nova_posicao_x = max(0, min(ss.HEIGHT - 1, self.posicao_x + dx)) # Verificação para não sair do grid e chegar no ultimo bloco
+        nova_posicao_y = max(0, min(ss.WIDTH - 1, self.posicao_y + dy))
         
         with grid_mutex:
-            if GRID[nova_posicao_x][nova_posicao_y] == "-":
+            # Para onde o robo quer se mover
+            destino = self.get_grid(nova_posicao_x, nova_posicao_y)
+            if destino == "-":
                 # Atualiza a posição do robô na grid
-                GRID[self.posicao_x][self.posicao_y] = "-" # Limpa a posição antiga
-                GRID[nova_posicao_x][nova_posicao_y] = str(self.ID) # Define a nova posição do robô
-                self.log.append(f"Robo {self.ID} movendo de ({self.posicao_x}, {self.posicao_y}) para ({nova_posicao_x}, {nova_posicao_y})")
-                self.posicao_x, self.posicao_y = nova_posicao_x, nova_posicao_y
-                self.energia -= 1
-                self.log.append(f"{vars(self)}")
+                self.set_grid(self.posicao_x, self.posicao_y, "-") # Limpa a posição antiga
+                self.posicao_x, self.posicao_y = nova_posicao_x, nova_posicao_y # Define a nova posição do robô
+                self.set_grid(self.posicao_x, self.posicao_y, str(self.ID)) # Atualiza a grid com a nova posição do robô (0, 5, id) - (x, y, id)
+                
+                self.energia -= 1 # 1 de energia por movimento
+                self.log.append(f"Robo {self.ID} se moveu para ({self.posicao_x}, {self.posicao_y}). Energia restante: {self.energia}.")
             else:
-                self.log.append(f"Robo {self.ID} tentou se mover para ({nova_posicao_x}, {nova_posicao_y}), mas a posição já está ocupada.")
+                self.log.append(f"Robo {self.ID} tentou se mover para ({self.posicao_x}, {self.posicao_y}), mas a posição já está ocupada.")
     
     def mostrar_log(self):
         print(f"Log do Robô {self.ID}:")

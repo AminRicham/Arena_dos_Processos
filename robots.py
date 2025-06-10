@@ -13,7 +13,7 @@ ALTURA_GRID = 20
 GRID = [["-" for _ in range(LARGURA_GRID)] for _ in range(ALTURA_GRID)]
 
 class Robot:
-    def __init__(self, ID, F, E, V, posicao_x, posicao_y, status):
+    def __init__(self, ID, F, E, V, posicao_x, posicao_y, status, grid, flags):
         self.ID = ID
         self.forca = F
         self.energia = E
@@ -22,10 +22,12 @@ class Robot:
         self.posicao_y = posicao_y
         self.status = status # Vivo ou morto
         self.log = [] # Log de ações do robô
+        self.grid = grid
+        self.flags = flags
         
         # Adiciona o robô na grid se a posição estiver vazia
         with grid_mutex: # Protegendo o grid
-            GRID[self.posicao_x][self.posicao_y] = str(self.ID)
+            self.set_grid(self.x, self.y, str(self.ID))
 
     def mover(self):
         if self.energia <= 0:

@@ -67,9 +67,20 @@ class Robot:
                 
                 self.energia -= 1 # 1 de energia por movimento
                 self.log.append(f"Robo {self.ID} se moveu para ({self.posicao_x}, {self.posicao_y}). Energia restante: {self.energia}.")
-            else:
-                self.log.append(f"Robo {self.ID} tentou se mover para ({self.posicao_x}, {self.posicao_y}), mas a posição já está ocupada.")
-    
+            
+            elif destino == "\U000026A1": # RAIO ⚡
+                self.set_grid(self.posicao_x, self.posicao_y, "-") # Limpa a posição antiga
+                self.posicao_x, self.posicao_y = nova_posicao_x, nova_posicao_y # Define a nova posição do robô
+                self.set_grid(self.posicao_x, self.posicao_y, str(self.ID)) # Atualiza a grid com a nova posição do robô
+                self.energia = min(100, self.energia + 20) # Recarrega a energia garantindo que não ultrapasse 100
+                self.log.append(f"Robo {self.ID} encontrou uma bateria e recarregou. Energia atual: {self.energia}.")
+            
+            elif destino == "#": # BARREIRA #
+                self.log.append(f"Robo {self.ID} encontrou uma barreira em ({nova_posicao_x}, {nova_posicao_y}) e não pôde se mover.")
+                
+            elif destino.isdigit() and destino != str(self.ID): # Se a posição já estiver ocupada por outro robô
+                self.duelar(int(destino))
+                
     def mostrar_log(self):
         print(f"Log do Robô {self.ID}:")
         for acao in self.log:

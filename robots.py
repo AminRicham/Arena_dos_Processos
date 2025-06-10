@@ -29,6 +29,19 @@ class Robot:
         with grid_mutex: # Protegendo o grid
             self.set_grid(self.x, self.y, str(self.ID))
 
+    def get_index(self, x, y):
+        """Calcula o índice do grid baseado na posição x e y."""
+        return y * LARGURA_GRID + x
+    
+    def get_grid(self, x, y):
+        """Obtém o valor do grid na posição (x, y)."""
+        return self.grid[self.get_index(x, y)].decode()
+    
+    def set_grid(self, x, y, value):
+        """Define o valor do grid na posição (x, y)."""
+        index = self.get_index(x, y)
+        self.grid[index] = value.encode()
+        
     def mover(self):
         if self.energia <= 0:
             print(f"Robô {self.ID} sem energia para se mover.")

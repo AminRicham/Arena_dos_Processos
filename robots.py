@@ -80,7 +80,9 @@ class Robot:
                 
             elif destino.isdigit() and destino != str(self.ID): # Se a posição já estiver ocupada por outro robô
                 self.duelar(int(destino))
-                
+    
+    
+    
     def mostrar_log(self):
         print(f"Log do Robô {self.ID}:")
         for acao in self.log:

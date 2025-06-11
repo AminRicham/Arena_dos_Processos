@@ -102,7 +102,7 @@ class Robot:
                 self.energia -= 1 # 1 de energia por movimento
                 self.log.append(f"Robo {self.ID} se moveu para ({self.posicao_x}, {self.posicao_y}). Energia restante: {self.energia}.")
             
-            elif destino == "\U000026A1": # RAIO ⚡
+            elif destino == "B": # RAIO ⚡
                 self.set_grid(self.posicao_x, self.posicao_y, "-") # Limpa a posição antiga
                 self.posicao_x, self.posicao_y = nova_posicao_x, nova_posicao_y # Define a nova posição do robô
                 self.set_grid(self.posicao_x, self.posicao_y, str(self.ID)) # Atualiza a grid com a nova posição do robô

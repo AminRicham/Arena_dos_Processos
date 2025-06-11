@@ -19,7 +19,6 @@ def main():
 
     gridFunctions.iniciaGrid(grid)
     gridFunctions.adicionaElementos(grid)
-    gridFunctions.printGrid(grid)
     flagsFunctions.initFlags(flags)
     
     
@@ -34,7 +33,7 @@ def main():
 
     for p in processos:
         p.join()
-
+    
 
 if __name__ == '__main__':
     main()

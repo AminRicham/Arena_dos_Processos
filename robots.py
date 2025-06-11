@@ -2,6 +2,7 @@ import random
 import multiprocessing as mp
 import threading
 import shared_struct as ss
+import gridFunctions
 from flagsFunctions import getFlagGameOver
 import time
 
@@ -107,6 +108,7 @@ class Robot:
                 self.set_grid(self.posicao_x, self.posicao_y, str(self.ID)) # Atualiza a grid com a nova posição do robô
                 self.energia = min(100, self.energia + 20) # Recarrega a energia garantindo que não ultrapasse 100
                 self.log.append(f"Robo {self.ID} encontrou uma bateria e recarregou. Energia atual: {self.energia}.")
+                
             
             elif destino == "#": # BARREIRA #
                 self.log.append(f"Robo {self.ID} encontrou uma barreira em ({nova_posicao_x}, {nova_posicao_y}) e não pôde se mover.")
@@ -152,7 +154,7 @@ class Robot:
         while self.status == b"V" and getFlagGameOver(self.flags) == 0:
             self.mover()
             tempo_espera = self.velocidade * 0.2
-            time.sleep(1)  # Simula o tempo de espera baseado na velocidade do robô
+            time.sleep(tempo_espera)  # Simula o tempo de espera baseado na velocidade do robô
     
     def housekeeping(self):
         """Método para o robô realizar tarefas de manutenção."""

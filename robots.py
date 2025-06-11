@@ -2,24 +2,16 @@ import random
 import multiprocessing as mp
 import threading
 import shared_struct as ss
-from shared_struct import RoboShared
-from flagsFunctions import setFlagGameOver, getFlagGameOver
+from flagsFunctions import getFlagGameOver
 import time
 
 
 # Criação dos locks mutex
 grid_mutex = mp.Lock()
 
-# Constantes para pegar do grid
-# Testes | Alterar para pegar do grid
-LARGURA_GRID = 20 
-ALTURA_GRID = 20
-
-# Simulação de grid 
-GRID = [["-" for _ in range(LARGURA_GRID)] for _ in range(ALTURA_GRID)]
 
 class Robot:
-    def __init__(self, ID, F, E, V, posicao_x, posicao_y, status, grid, flags, robots_shared):
+    def __init__(self, ID, F, E, V, posicao_x, posicao_y, status, grid, flags, robots_shared, robots_mutex, grid_mutex):
         self.ID = ID
         self.forca = F
         self.energia = E
@@ -31,23 +23,25 @@ class Robot:
         self.grid = grid
         self.flags = flags
         self.robots = robots_shared  # Lista de robôs compartilhada
+        self.robots_mutex = robots_mutex
+        self.grid_mutex = grid_mutex  # Mutex para proteger o grid
         
         # Adiciona o robô na grid se a posição estiver vazia
-        with grid_mutex: # Protegendo o grid
-            self.set_grid(self.x, self.y, str(self.ID))
+        with self.grid_mutex: # Protegendo o grid
+            self.set_grid(self.posicao_x, self.posicao_y, str(self.ID))
 
     def get_index(self, x, y):
         """Calcula o índice do grid baseado na posição x e y."""
-        return y * LARGURA_GRID + x
+        return y * ss.WIDTH + x
     
     def get_grid(self, x, y):
         """Obtém o valor do grid na posição (x, y)."""
-        return self.grid[self.get_index(x, y)].decode()
+        return self.grid[self.get_index(x, y)]
     
     def set_grid(self, x, y, value):
         """Define o valor do grid na posição (x, y)."""
         index = self.get_index(x, y)
-        self.grid[index] = value.encode()
+        self.grid[index] = value
         
     def mover(self):
         if self.energia <= 0 or self.status != b"V":
@@ -56,13 +50,11 @@ class Robot:
         
         # Movimento aleatório do robo
         dx, dy = random.choice([(0, 1), (1, 0), (0, -1), (-1, 0)])  # Cima, baixo, esquerda, direita
-        dx *= self.velocidade
-        dy *= self.velocidade
         # Definindo nova posição
-        nova_posicao_x = max(0, min(ss.HEIGHT - 1, self.posicao_x + dx)) # Verificação para não sair do grid e chegar no ultimo bloco
-        nova_posicao_y = max(0, min(ss.WIDTH - 1, self.posicao_y + dy))
+        nova_posicao_x = max(0, min(ss.WIDTH - 1, self.posicao_x + dx)) # Verificação para não sair do grid e chegar no ultimo bloco
+        nova_posicao_y = max(0, min(ss.HEIGHT - 1, self.posicao_y + dy))
         
-        with grid_mutex:
+        with self.grid_mutex:
             # Para onde o robo quer se mover
             destino = self.get_grid(nova_posicao_x, nova_posicao_y)
             if destino == "-":
@@ -70,11 +62,10 @@ class Robot:
                 self.set_grid(self.posicao_x, self.posicao_y, "-") # Limpa a posição antiga
                 self.posicao_x, self.posicao_y = nova_posicao_x, nova_posicao_y # Define a nova posição do robô
                 self.set_grid(self.posicao_x, self.posicao_y, str(self.ID)) # Atualiza a grid com a nova posição do robô (0, 5, id) - (x, y, id)
-                
                 self.energia -= 1 # 1 de energia por movimento
                 self.log.append(f"Robo {self.ID} se moveu para ({self.posicao_x}, {self.posicao_y}). Energia restante: {self.energia}.")
             
-            elif destino == "\U000026A1": # RAIO ⚡
+            elif destino == "B": # RAIO ⚡
                 self.set_grid(self.posicao_x, self.posicao_y, "-") # Limpa a posição antiga
                 self.posicao_x, self.posicao_y = nova_posicao_x, nova_posicao_y # Define a nova posição do robô
                 self.set_grid(self.posicao_x, self.posicao_y, str(self.ID)) # Atualiza a grid com a nova posição do robô
@@ -97,23 +88,26 @@ class Robot:
         # Lógica de duelo
         if self.forca > outro_robo.forca:
             self.log.append(f"Robo {self.ID} venceu o duelo contra Robo {outro_robo_id}.")
-            outro_robo.status = b"M"
-            with grid_mutex:
+            with self.robots_mutex:
+                outro_robo.status = b"M"
+            with self.grid_mutex:
                 self.set_grid(outro_robo.posicao_x, outro_robo.posicao_y, "-")
         
         elif self.forca < outro_robo.forca:
             self.log.append(f"Robo {self.ID} perdeu o duelo contra Robo {outro_robo_id}.")
             self.status = b"M"
-            self.robots[self.ID] = 0 # Marca o robô atual como morto
-            with grid_mutex:
+            with self.robots_mutex:
+                self.robots[self.ID].status = b"M"
+            with self.grid_mutex:
                 self.set_grid(self.posicao_x, self.posicao_y, "-")
         
         else: 
             self.log.append(f"Robo {self.ID} e Robo {outro_robo_id} empataram no duelo.")
             self.status = b"M"
-            outro_robo.status = b"M"
-            self.robots[self.ID] = 0
-            with grid_mutex:
+            with self.robots_mutex:
+                outro_robo.status = b"M"
+                self.robots[self.ID].status = b"M"
+            with self.grid_mutex:
                 self.set_grid(self.posicao_x, self.posicao_y, "-")
                 self.set_grid(outro_robo.posicao_x, outro_robo.posicao_y, "-")
             
@@ -122,7 +116,7 @@ class Robot:
         while self.status == b"V" and getFlagGameOver(self.flags) == 0:
             self.mover()
             tempo_espera = self.velocidade * 0.2
-            time.sleep(tempo_espera)  # Simula o tempo de espera baseado na velocidade do robô
+            time.sleep(1)  # Simula o tempo de espera baseado na velocidade do robô
     
     def housekeeping(self):
         """Método para o robô realizar tarefas de manutenção."""
@@ -130,7 +124,7 @@ class Robot:
             self.energia -= 1
             if self.energia <= 0:
                 self.status = b"M"
-                with grid_mutex:
+                with self.grid_mutex:
                     self.set_grid(self.posicao_x, self.posicao_y, "-")
                 self.log.append(f"Robo {self.ID} ficou sem energia e foi desligado.")
             time.sleep(1)
@@ -147,10 +141,17 @@ class Robot:
         for linha in self.log:
             print(linha)
 
+def processo_robo(ID, grid, flags, robots_shared, robots_mutex, grid_mutex):
+    """Função para iniciar o processo do robô."""
+    # Inicializa o robô com valores aleatórios
+    F = random.randint(1, 10)  # Força
+    E = random.randint(50, 100)  # Energia
+    V = random.randint(1, 5)  # Velocidade
+    posicao_x = random.randint(0, ss.WIDTH - 1)
+    posicao_y = random.randint(0, ss.HEIGHT - 1)
+    
+    robo = Robot(ID, F, E, V, posicao_x, posicao_y, b"V", grid, flags, robots_shared, robots_mutex, grid_mutex)
+    robo.iniciar()
+    
 
-# testar a classe Robot
-robo1 = Robot(ID=1, F=10, E=100, V=5, posicao_x=random.randint(0, 19), posicao_y=random.randint(0, 19), status="V")
-robo1.mover()
-robo1.mostrar_log()
-#print(vars(robo1))
     

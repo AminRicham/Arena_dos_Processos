@@ -48,11 +48,47 @@ class Robot:
             print(f"Robô {self.ID} sem energia ou morto.")
             return
         
-        # Movimento aleatório do robo
-        dx, dy = random.choice([(0, 1), (1, 0), (0, -1), (-1, 0)])  # Cima, baixo, esquerda, direita
-        # Definindo nova posição
-        nova_posicao_x = max(0, min(ss.WIDTH - 1, self.posicao_x + dx)) # Verificação para não sair do grid e chegar no ultimo bloco
+        # Buscar bateria mais proxima
+        bateria_mais_proxima = None
+        menor_distancia = float('inf')
+        for y in range(ss.HEIGHT):
+            for x in range(ss.WIDTH):
+                if self.get_grid(x, y) == "B":
+                    distancia = abs(self.posicao_x - x) + abs(self.posicao_y - y)
+                    if distancia < menor_distancia:
+                        menor_distancia = distancia
+                        bateria_mais_proxima = (x, y)
+        
+        # Se encontrou uma bateria, move-se em direção a ela
+        if bateria_mais_proxima:
+            bateria_x, bateria_y = bateria_mais_proxima
+            dx = 0
+            dy = 0
+            # Verifica a direção para se mover em direção à bateria
+            # Se o x da bateria for maior que o x do robô, move para a direita (dx = 1)
+            if self.posicao_x < bateria_x:
+                dx = 1
+            # Se o x da bateria for menor que o x do robô, move para a esquerda (dx = -1)
+            elif self.posicao_x > bateria_x:
+                dx = -1
+            # se for 0, quer dizer que o robô está na mesma linha da bateria
+            if dx == 0:
+                if self.posicao_y < bateria_y:
+                    dy = 1
+                elif self.posicao_y > bateria_y:
+                    dy = -1
+        else:
+            # Movimento aleatório se não houver bateria próxima
+            dx, dy = random.choice([(0, 1), (1, 0), (0, -1), (-1, 0)])
+        
+        nova_posicao_x = max(0, min(ss.WIDTH - 1, self.posicao_x + dx))
         nova_posicao_y = max(0, min(ss.HEIGHT - 1, self.posicao_y + dy))
+        
+        # Movimento aleatório do robo
+        #dx, dy = random.choice([(0, 1), (1, 0), (0, -1), (-1, 0)])  # Cima, baixo, esquerda, direita
+        # Definindo nova posição
+        #nova_posicao_x = max(0, min(ss.WIDTH - 1, self.posicao_x + dx)) # Verificação para não sair do grid e chegar no ultimo bloco
+        #nova_posicao_y = max(0, min(ss.HEIGHT - 1, self.posicao_y + dy))
         
         with self.grid_mutex:
             # Para onde o robo quer se mover

@@ -4,6 +4,7 @@ import gridFunctions
 import flagsFunctions
 
 def main():
+    """Criação da memoria compartilhada"""
     grid = Array(typecode_or_type='u', size_or_initializer=ss.GRID_SIZE, lock=True)
     grid_mutex = Lock()
 

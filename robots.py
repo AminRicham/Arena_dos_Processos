@@ -115,7 +115,7 @@ class Robot:
                 
             elif destino.isdigit() and destino != str(self.ID): # Se a posição já estiver ocupada por outro robô
                 self.duelar(int(destino))
-    
+                
     def mover_para(self,dx,dy):
         nova_posicao_x = max(0, min(ss.WIDTH - 1, self.posicao_x + dx))
         nova_posicao_y = max(0, min(ss.HEIGHT - 1, self.posicao_y + dy))

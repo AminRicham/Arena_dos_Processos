@@ -22,7 +22,6 @@ def main():
     gridFunctions.iniciaGrid(grid)
     gridFunctions.adicionaElementos(grid)
     flagsFunctions.initFlags(flags)
-    
 
     processos = []
     for i in range(ss.QTD_ROBOS):
@@ -36,6 +35,7 @@ def main():
                 target=processo_robo,
                 args=(i, grid, flags, robots, robots_mutex, grid_mutex)
             )
+
         processo.start()
         processos.append(processo)
 

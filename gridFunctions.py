@@ -32,7 +32,7 @@ def adicionaBaterias(grid):
     """
     for _ in range (ss.QTD_BATERIAS):
         posicao = randint(0, 799)
-        grid[posicao] = "\U000026A1"
+        grid[posicao] = "B"
 
 def adicionaBarreiras(grid):
     """

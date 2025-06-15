@@ -6,7 +6,7 @@ import gridFunctions
 from flagsFunctions import getFlagGameOver
 import time
 from teclado import ler_tecla
-
+from multiprocessing import shared_memory
 # Criação dos locks mutex
 grid_mutex = mp.Lock()
 
@@ -210,8 +210,10 @@ class Robot:
         for linha in self.log:
             print(linha)
 
-def processo_robo(ID, grid, flags, robots_shared, robots_mutex, grid_mutex):
+def processo_robo(ID, flags, robots_shared, robots_mutex, grid_mutex, shm_name):
     """Função para iniciar o processo do robô."""
+    shm = shared_memory.SharedMemory(name=shm_name)
+    grid = shm.buf
     # Inicializa o robô com valores aleatórios
     F = random.randint(1, 10)  # Força
     E = random.randint(50, 100)  # Energia
@@ -222,8 +224,10 @@ def processo_robo(ID, grid, flags, robots_shared, robots_mutex, grid_mutex):
     robo = Robot(ID, F, E, V, posicao_x, posicao_y, b"V", grid, flags, robots_shared, robots_mutex, grid_mutex)
     robo.iniciar()
     
-def processo_jogador(ID, grid, flags, robots_shared, robots_mutex, grid_mutex):
+def processo_jogador(ID, grid, flags, robots_shared, robots_mutex, grid_mutex, shm_name):
     """Função para iniciar o processo do robô jogador."""
+    shm = shared_memory.SharedMemory(name=shm_name)
+    grid = shm.buf
     # Inicializa o robô com valores aleatórios
     F = random.randint(1, 10)  # Força
     E = 100  # Energia == 100 por conta do dinamismo do jogador

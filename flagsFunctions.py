@@ -1,4 +1,5 @@
-def initFlags(flags):
+import shared_struct as ss
+def initFlags(flags, shm_buf):
     """
     Inicia o array de flags com localizações:
     flag[0] - Init_Done - indica se terminou o processo de inicio do jogo
@@ -10,6 +11,8 @@ def initFlags(flags):
     flags[0] = 0 
     flags[1] = -1
     flags[2] = 0
+    shm_buf[ss.TOTAL_SIZE] = 0
+
 
 def getFlagInitDone(flags):
     return flags[0]

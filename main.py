@@ -16,7 +16,11 @@ def main():
         print("Erro na criação da memoria:", e)
         return
 
-    grid_mutex = Lock()
+    manager = Manager()
+
+    grid_mutex = manager.Lock()
+    robots_mutex = manager.Lock()
+    flags_mutex = manager.Lock()
 
     robots = Array(RoboShared, ss.QTD_ROBOS, lock=True)  # CORRETO
     robots_mutex = Lock()

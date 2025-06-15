@@ -1,10 +1,25 @@
-Robo 2 iniciado com Força: 6, Energia: 75, Velocidade: 4, Posição: (24, 2), Status: V
-Robo 2 se moveu para (24, 3). Energia restante: 74.
-Robo 2 se moveu para (24, 4). Energia restante: 73.
-Robo 2 se moveu para (25, 4). Energia restante: 71.
-Robo 2 se moveu para (25, 3). Energia restante: 69.
-Robo 2 se moveu para (25, 4). Energia restante: 67.
-Robo 2 se moveu para (25, 5). Energia restante: 65.
-Robo 2 se moveu para (24, 5). Energia restante: 64.
-Robo 2 se moveu para (24, 6). Energia restante: 62.
+Robo 2 iniciado com Força: 5, Energia: 59, Velocidade: 2, Posição: (14, 7), Status: V
+Robo 2 encontrou uma bateria e recarregou. Energia atual: 79.
+Robo 2 se moveu para (14, 7). Energia restante: 78.
+Robo 2 se moveu para (15, 7). Energia restante: 77.
+Robo 2 encontrou uma barreira em (15, 6) e não pôde se mover.
+Robo 2 se moveu para (15, 8). Energia restante: 75.
+Robo 2 se moveu para (14, 8). Energia restante: 73.
+Robo 2 se moveu para (15, 8). Energia restante: 72.
+Robo 2 se moveu para (14, 8). Energia restante: 71.
+Robo 2 se moveu para (13, 8). Energia restante: 69.
+Robo 2 se moveu para (14, 8). Energia restante: 68.
+Robo 2 se moveu para (14, 7). Energia restante: 66.
+Robo 2 se moveu para (14, 6). Energia restante: 65.
+Robo 2 se moveu para (14, 7). Energia restante: 64.
+Robo 2 se moveu para (14, 8). Energia restante: 62.
+Robo 2 se moveu para (15, 8). Energia restante: 61.
+Robo 2 se moveu para (15, 7). Energia restante: 59.
+Robo 2 encontrou uma barreira em (15, 6) e não pôde se mover.
+Robo 2 encontrou uma barreira em (15, 6) e não pôde se mover.
+Robo 2 se moveu para (16, 7). Energia restante: 57.
+Robo 2 se moveu para (16, 8). Energia restante: 56.
+Robo 2 se moveu para (17, 8). Energia restante: 54.
+Robo 2 se moveu para (17, 9). Energia restante: 53.
+Robo 2 se moveu para (18, 9). Energia restante: 52.
 Robo 2 finalizou suas atividades.

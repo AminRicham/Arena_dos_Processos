@@ -1,12 +1,33 @@
-Robo 1 iniciado com Força: 5, Energia: 89, Velocidade: 4, Posição: (27, 9), Status: V
-Robo 1 se moveu para (26, 9). Energia restante: 88.
-Robo 1 se moveu para (26, 8). Energia restante: 87.
-Robo 1 se moveu para (26, 7). Energia restante: 85.
-Robo 1 se moveu para (25, 7). Energia restante: 83.
-Robo 1 se moveu para (26, 7). Energia restante: 81.
-Robo 1 se moveu para (27, 7). Energia restante: 79.
-Robo 1 se moveu para (27, 6). Energia restante: 78.
-Robo 1 se moveu para (27, 7). Energia restante: 76.
-Robo 1 se moveu para (27, 6). Energia restante: 74.
-Robo 1 se moveu para (27, 5). Energia restante: 72.
+Robo 1 iniciado com Força: 9, Energia: 83, Velocidade: 4, Posição: (19, 1), Status: V
+Robo 1 se moveu para (19, 2). Energia restante: 82.
+Robo 1 se moveu para (18, 2). Energia restante: 81.
+Robo 1 se moveu para (18, 3). Energia restante: 79.
+Robo 1 se moveu para (17, 3). Energia restante: 77.
+Robo 1 se moveu para (16, 3). Energia restante: 75.
+Robo 1 se moveu para (16, 2). Energia restante: 73.
+Robo 1 se moveu para (16, 3). Energia restante: 72.
+Robo 1 se moveu para (16, 2). Energia restante: 70.
+Robo 1 se moveu para (16, 3). Energia restante: 68.
+Robo 1 se moveu para (16, 2). Energia restante: 66.
+Robo 1 se moveu para (17, 2). Energia restante: 64.
+Robo 1 se moveu para (18, 2). Energia restante: 63.
+Robo 1 se moveu para (18, 3). Energia restante: 61.
+Robo 1 se moveu para (18, 2). Energia restante: 59.
+Robo 1 se moveu para (17, 2). Energia restante: 57.
+Robo 1 se moveu para (18, 2). Energia restante: 55.
+Robo 1 se moveu para (18, 3). Energia restante: 54.
+Robo 1 se moveu para (18, 2). Energia restante: 52.
+Robo 1 se moveu para (17, 2). Energia restante: 50.
+Robo 1 com energia baixa (49). Buscando bateria.
+Robo 1 se moveu para (18, 2). Energia restante: 48.
+Robo 1 com energia baixa (47). Buscando bateria.
+Robo 1 se moveu para (19, 2). Energia restante: 46.
+Robo 1 com energia baixa (46). Buscando bateria.
+Robo 1 se moveu para (20, 2). Energia restante: 45.
+Robo 1 com energia baixa (44). Buscando bateria.
+Robo 1 se moveu para (21, 2). Energia restante: 43.
+Robo 1 com energia baixa (42). Buscando bateria.
+Robo 1 encontrou uma bateria e recarregou. Energia atual: 62.
+DUELO: Robô 1 (F:9) vs Robô 0 (F:10)
+Robo 1 foi derrotado pelo Robo 0.
 Robo 1 finalizou suas atividades.

@@ -1,0 +1,35 @@
+Robo 3 iniciado com Força: 5, Energia: 62, Velocidade: 3, Posição: (29, 1), Status: V
+Robo 3 se moveu para (29, 0). Energia restante: 61.
+Robo 3 se moveu para (29, 1). Energia restante: 60.
+Robo 3 se moveu para (29, 2). Energia restante: 58.
+Robo 3 se moveu para (29, 3). Energia restante: 57.
+Robo 3 se moveu para (29, 2). Energia restante: 55.
+Robo 3 se moveu para (29, 1). Energia restante: 53.
+Robo 3 se moveu para (30, 1). Energia restante: 52.
+Robo 3 se moveu para (31, 1). Energia restante: 50.
+Robo 3 se moveu para (32, 1). Energia restante: 49.
+Robo 3 com energia baixa (48). Buscando bateria.
+Robo 3 se moveu para (33, 1). Energia restante: 47.
+Robo 3 com energia baixa (46). Buscando bateria.
+Robo 3 se moveu para (34, 1). Energia restante: 45.
+Robo 3 com energia baixa (45). Buscando bateria.
+Robo 3 se moveu para (35, 1). Energia restante: 44.
+Robo 3 com energia baixa (43). Buscando bateria.
+Robo 3 se moveu para (36, 1). Energia restante: 42.
+Robo 3 com energia baixa (42). Buscando bateria.
+Robo 3 se moveu para (37, 1). Energia restante: 41.
+Robo 3 com energia baixa (40). Buscando bateria.
+Robo 3 encontrou uma bateria e recarregou. Energia atual: 60.
+Robo 3 se moveu para (37, 3). Energia restante: 58.
+Robo 3 se moveu para (36, 3). Energia restante: 57.
+Robo 3 se moveu para (35, 3). Energia restante: 55.
+Robo 3 se moveu para (36, 3). Energia restante: 54.
+Robo 3 se moveu para (35, 3). Energia restante: 52.
+Robo 3 se moveu para (35, 4). Energia restante: 50.
+Robo 3 se moveu para (34, 4). Energia restante: 49.
+Robo 3 com energia baixa (48). Buscando bateria.
+Robo 3 se moveu para (33, 4). Energia restante: 47.
+Robo 3 com energia baixa (47). Buscando bateria.
+DUELO: Robô 3 (F:5) vs Robô 0 (F:10)
+Robo 3 foi derrotado pelo Robo 0.
+Robo 3 finalizou suas atividades.

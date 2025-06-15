@@ -158,6 +158,7 @@ class Robot:
         with self.robots_mutex:
             outro_robo_forca = self.robots[outro_robo_id].forca
             outro_robo_status = self.robots[outro_robo_id].status
+            outro_robo_energia = self.robots[outro_robo_id].energia
 
             # Verifica se o robo atual e o outro robo estao ativos
             if self.status != b"V" or outro_robo_status != b"V":
@@ -167,7 +168,9 @@ class Robot:
             self.log.append(f"DUELO: Robô {self.ID} (F:{self.forca}) vs Robô {outro_robo_id} (F:{outro_robo_forca})")
             
             # Robo atual mais forte que o robo adversário
-            if self.forca > outro_robo_forca:
+            poderRoboAtual = 2 * self.forca + self.energia
+            poderOutroRobo = 2 * outro_robo_forca + outro_robo_energia
+            if poderRoboAtual > poderOutroRobo:
                 self.robots[outro_robo_id].status = b"M"
                 with self.grid_mutex:
                     self.set_grid(self.posicao_x, self.posicao_y, "-") 
@@ -176,7 +179,7 @@ class Robot:
                 self.log.append(f"Robo {self.ID} venceu o duelo contra o Robo {outro_robo_id}.")
             
             # Robo adversário mais forte que o robo atual
-            elif self.forca < outro_robo_forca:
+            elif poderRoboAtual < poderOutroRobo:
                 self.status = b"M"
                 self.robots[self.ID].status = b"M"
                 with self.grid_mutex:
@@ -245,7 +248,7 @@ def processo_robo(ID, flags, robots_shared, robots_mutex, grid_mutex, flags_mute
     grid = shm.buf
     
     F = random.randint(1, 10) # Força 
-    E = random.randint(50, 100) # Energia
+    E = random.randint(10, 100) # Energia
     V = random.randint(1, 5) # Velocidade 
 
     with grid_mutex:

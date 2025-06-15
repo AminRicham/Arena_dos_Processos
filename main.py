@@ -9,11 +9,17 @@ def main():
     """Criação da memoria compartilhada"""
     shm_name = "arena_dos_robos"
     try:
-        shm = shared_memory.SharedMemory(name = shm_name, create=True, size=ss.TOTAL_SIZE + 1)
+        # Garante que memória com o mesmo nome não exista antes de criar
+        try:
+            existing_shm = shared_memory.SharedMemory(name=shm_name)
+            existing_shm.close()
+            existing_shm.unlink()
+        except FileNotFoundError:
+            pass 
 
-#       grid = Array(typecode_or_type='u', size_or_initializer=ss.GRID_SIZE, lock=True)
+        shm = shared_memory.SharedMemory(name=shm_name, create=True, size=ss.TOTAL_SIZE + 4)
     except FileExistsError as e:
-        print("Erro na criação da memoria:", e)
+        print(f"Erro na criação da memoria: {e}")
         return
 
     manager = Manager()
@@ -22,13 +28,8 @@ def main():
     robots_mutex = manager.Lock()
     flags_mutex = manager.Lock()
 
-    robots = Array(RoboShared, ss.QTD_ROBOS, lock=True)  # CORRETO
-    robots_mutex = Lock()
-
+    robots = Array(RoboShared, ss.QTD_ROBOS, lock=True)
     flags = Array(typecode_or_type= "i", size_or_initializer=(ss.QTD_FLAGS), lock=True)
-    flags_mutex = Lock()
-
-    battery_mutex = [Lock() for _ in range (ss.QTD_BATERIAS)]
 
     gridFunctions.iniciaGrid(shm.buf)
     gridFunctions.adicionaElementos(shm.buf)
@@ -38,20 +39,21 @@ def main():
 
     processos = []
     for i in range(ss.QTD_ROBOS):
+        # O robô de ID 0 é o jogador
         if i == 0:
             processo = Process(
                 target=processo_jogador,
-                args=(i, flags, robots, robots_mutex, grid_mutex, shm_name)
+                args=(i, flags, robots, robots_mutex, grid_mutex, flags_mutex, shm_name)
             )
         else:
             processo = Process(
                 target=processo_robo,
-                args=(i, flags, robots, robots_mutex, grid_mutex, shm_name)
+                args=(i, flags, robots, robots_mutex, grid_mutex, flags_mutex, shm_name)
             )
-
         processo.start()
         processos.append(processo)
 
+    # Espera todos os processos terminarem
     for p in processos:
         p.join()
     

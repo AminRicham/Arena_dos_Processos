@@ -2,6 +2,20 @@ import time
 import os
 from multiprocessing import shared_memory
 from shared_struct import WIDTH, HEIGHT, GRID_SIZE, TOTAL_SIZE
+import ctypes
+
+NUM_ROBOS = 10  # Ajuste conforme o total de robôs usados no seu projeto
+
+class RobotStruct(ctypes.Structure):
+    _fields_ = [
+        ('ID', ctypes.c_int),
+        ('forca', ctypes.c_int),
+        ('energia', ctypes.c_int),
+        ('velocidade', ctypes.c_int),
+        ('x', ctypes.c_int),
+        ('y', ctypes.c_int),
+        ('status', ctypes.c_char)
+    ]
 
 def render(grid_bytes):
     os.system("cls" if os.name == "nt" else "clear")
@@ -10,6 +24,17 @@ def render(grid_bytes):
         linha = grid_bytes[i*WIDTH:(i+1)*WIDTH].decode('utf-8')
         print(linha)
     print()
+
+def contar_robos_vivos(robots_buf):
+    vivos = 0
+    vencedor_id = -1
+    for i in range(NUM_ROBOS):
+        offset = i * ctypes.sizeof(RobotStruct)
+        robot = RobotStruct.from_buffer_copy(robots_buf[offset:offset + ctypes.sizeof(RobotStruct)])
+        if robot.status == b"V":
+            vivos += 1
+            vencedor_id = robot.ID
+    return vivos, vencedor_id
 
 def main():
     try:
@@ -22,16 +47,24 @@ def main():
         buffer = shm.buf[:TOTAL_SIZE]
         grid_bytes = bytes(buffer[:GRID_SIZE])
         game_over_flag = int.from_bytes(buffer[GRID_SIZE:GRID_SIZE+4], "little")
+        robots_buf = buffer[GRID_SIZE+4:]
 
         render(grid_bytes)
 
+        vivos, vencedor_id = contar_robos_vivos(robots_buf)
+        if vivos == 1:
+            print(f"\n\n🏆 FIM DE JOGO! ROBO {vencedor_id} VENCEU!!! 🏆\n")
+            break
+        elif vivos == 0:
+            print("\n\n💀 FIM DE JOGO! TODOS OS ROBÔS FORAM DESTRUIDOS. EMPATE! 💀\n")
+            break
+
         if game_over_flag == 1:
-            print("Fim de jogo detectado.")
+            print("Fim de jogo detectado pela flag.")
             break
 
         time.sleep(0.2)
 
-    # Libera referências antes de fechar
     del grid_bytes
     del buffer
     shm.close()

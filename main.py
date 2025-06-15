@@ -1,4 +1,4 @@
-from multiprocessing import Lock, Array, Process, shared_memory
+from multiprocessing import Manager, Array, Process, shared_memory
 from robots import processo_robo, processo_jogador
 import shared_struct as ss
 from shared_struct import RoboShared

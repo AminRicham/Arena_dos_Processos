@@ -36,13 +36,27 @@ class Robot:
         return y * ss.WIDTH + x
     
     def get_grid(self, x, y):
-        """Obtém o valor do grid na posição (x, y)."""
-        return self.grid[self.get_index(x, y)]
+        """Obtém o valor do grid na posição (x, y) como caractere."""
+        byte_value = self.grid[self.get_index(x, y)]
+        return chr(byte_value)
+
     
     def set_grid(self, x, y, value):
         """Define o valor do grid na posição (x, y)."""
         index = self.get_index(x, y)
-        self.grid[index] = value
+
+        if isinstance(value, str):
+            # Converte o primeiro caractere da string para seu código ASCII
+            self.grid[index] = ord(value[0])
+        elif isinstance(value, int):
+            # Atribui diretamente se for inteiro
+            self.grid[index] = value
+        elif isinstance(value, bytes):
+            # Se for bytes, usa o primeiro byte
+            self.grid[index] = value[0]
+        else:
+            raise ValueError(f"Tipo inválido para set_grid: {type(value)}")
+
         
     def mover(self):
         if self.energia <= 0 or self.status != b"V":
@@ -224,7 +238,7 @@ def processo_robo(ID, flags, robots_shared, robots_mutex, grid_mutex, shm_name):
     robo = Robot(ID, F, E, V, posicao_x, posicao_y, b"V", grid, flags, robots_shared, robots_mutex, grid_mutex)
     robo.iniciar()
     
-def processo_jogador(ID, grid, flags, robots_shared, robots_mutex, grid_mutex, shm_name):
+def processo_jogador(ID, flags, robots_shared, robots_mutex, grid_mutex, shm_name):
     """Função para iniciar o processo do robô jogador."""
     shm = shared_memory.SharedMemory(name=shm_name)
     grid = shm.buf

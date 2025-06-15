@@ -55,15 +55,15 @@ def adicionaElementos(shm_buff):
     adicionaBaterias(shm_buff)
 
 try:
-    shm = shared_memory.SharedMemory(name = "arena_dos_robos", create=True, size=ss.TOTAL_SIZE)
+    shm = shared_memory.SharedMemory(name = "arena_dos_robos", create=True, size=ss.TOTAL_SIZE + 1)
 #       grid = Array(typecode_or_type='u', size_or_initializer=ss.GRID_SIZE, lock=True)
     iniciaGrid(shm.buf)
     adicionaElementos(shm.buf)
     printGrid(shm.buf)
     shm.close()
     shm.unlink()
-except FileExistsError:
-    print("Erro na criação da memoria.")
+except FileExistsError as e:
+    print("Erro na criação da memoria:", e)
 
 
 

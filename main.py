@@ -9,10 +9,11 @@ def main():
     """Criação da memoria compartilhada"""
     shm_name = "arena_dos_robos"
     try:
-        shm = shared_memory.SharedMemory(name = shm_name, create=True, size=ss.TOTAL_SIZE)
+        shm = shared_memory.SharedMemory(name = shm_name, create=True, size=ss.TOTAL_SIZE + 1)
+
 #       grid = Array(typecode_or_type='u', size_or_initializer=ss.GRID_SIZE, lock=True)
-    except FileExistsError:
-        print("Erro na criação da memoria.")
+    except FileExistsError as e:
+        print("Erro na criação da memoria:", e)
         return
 
     grid_mutex = Lock()
@@ -36,12 +37,12 @@ def main():
         if i == 0:
             processo = Process(
                 target=processo_jogador,
-                args=(i,shm.buf, flags, robots, robots_mutex, grid_mutex, shm_name)
+                args=(i, flags, robots, robots_mutex, grid_mutex, shm_name)
             )
         else:
             processo = Process(
                 target=processo_robo,
-                args=(i,shm.buf, flags, robots, robots_mutex, grid_mutex, shm_name)
+                args=(i, flags, robots, robots_mutex, grid_mutex, shm_name)
             )
 
         processo.start()

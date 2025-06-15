@@ -1,11 +1,13 @@
 from multiprocessing import Lock, Array, Process
-from robots import processo_robo
+from robots import processo_robo, processo_jogador
 import shared_struct as ss
 from shared_struct import RoboShared
 import gridFunctions
 import flagsFunctions
 
 def main():
+    """Criação da memoria compartilhada"""
+
     grid = Array(typecode_or_type='u', size_or_initializer=ss.GRID_SIZE, lock=True)
     grid_mutex = Lock()
 
@@ -20,14 +22,20 @@ def main():
     gridFunctions.iniciaGrid(grid)
     gridFunctions.adicionaElementos(grid)
     flagsFunctions.initFlags(flags)
-    
-    
+
     processos = []
     for i in range(ss.QTD_ROBOS):
-        processo = Process(
-            target=processo_robo,
-            args=(i, grid, flags, robots, robots_mutex, grid_mutex)
-        )
+        if i == 0:
+            processo = Process(
+                target=processo_jogador,
+                args=(i, grid, flags, robots, robots_mutex, grid_mutex)
+            )
+        else:
+            processo = Process(
+                target=processo_robo,
+                args=(i, grid, flags, robots, robots_mutex, grid_mutex)
+            )
+
         processo.start()
         processos.append(processo)
 

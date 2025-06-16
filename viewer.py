@@ -4,7 +4,7 @@ from multiprocessing import shared_memory
 from shared_struct import WIDTH, HEIGHT, GRID_SIZE, TOTAL_SIZE
 import ctypes
 
-NUM_ROBOS = 10  # Ajuste conforme o total de robôs usados no seu projeto
+NUM_ROBOS = 10  # Ajuste conforme o total de robôs usados
 
 class RobotStruct(ctypes.Structure):
     _fields_ = [
@@ -16,7 +16,7 @@ class RobotStruct(ctypes.Structure):
         ('posicao_y', ctypes.c_int),
         ('status', ctypes.c_char)
     ]
-
+#Atualizar o Grid
 def render(grid_bytes):
     os.system("cls" if os.name == "nt" else "clear")
     print("=== ARENA DOS ROBÔS ===")
@@ -24,7 +24,7 @@ def render(grid_bytes):
         linha = grid_bytes[i*WIDTH:(i+1)*WIDTH].decode('utf-8')
         print(linha)
     print()
-
+#percorre cara linha buscando os robos 
 def contar_robos_vivos(robots_buf):
     vivos = 0
     vencedor_id = -1

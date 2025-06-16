@@ -12,8 +12,8 @@ class RobotStruct(ctypes.Structure):
         ('forca', ctypes.c_int),
         ('energia', ctypes.c_int),
         ('velocidade', ctypes.c_int),
-        ('x', ctypes.c_int),
-        ('y', ctypes.c_int),
+        ('posicao_x', ctypes.c_int),
+        ('posicao_y', ctypes.c_int),
         ('status', ctypes.c_char)
     ]
 
